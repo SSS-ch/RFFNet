@@ -58,11 +58,50 @@ All datasets are preprocessed following the protocol described in the paper:
 
 ## ⚙️ Requirements
 
-```bash
-Python >= 3.9
-PyTorch >= 2.0
-numpy
-scipy
-scikit-image
-nibabel
+Python >= 3.9  
+PyTorch >= 2.0  
+numpy  
+scipy  
+scikit-image  
+nibabel  
 tqdm
+
+---
+
+## 🚀 Training
+
+RFFNet is trained in a supervised manner using paired low-resolution (LR) and high-resolution (HR) 3D MRI volumes.
+
+Example: Training for 2× Super-Resolution
+
+```bash
+python train.py \
+  --upscale_factor 2 \
+  --dataset Kirby21 \
+  --batch_size 32 \
+  --epochs 200 \
+  --log_dir logs
+```
+
+Training Settings:
+Optimizer: Adam (β1 = 0.9, β2 = 0.999),
+Loss function: Mean Squared Error (MSE),
+Learning rate: 1e-4, halved every 50 epochs,
+Patch size: 32 × 32 × 32,
+Framework: PyTorch,
+Training logs and model checkpoints are saved automatically during training.
+
+---
+
+## 🧪 Testing
+
+To evaluate a trained RFFNet model, run:
+
+```bash
+python test.py \
+  --hr_path dataset/Kirby21/test/hr \
+  --pre_save_path results/Kirby21/x2 \
+  --pth_path logs/XXXX_XX_XX_XX_XX_XX/XX_best_psnr.pth \
+  --upscale_factor 2
+
+
