@@ -16,25 +16,42 @@ from utils.metric import calculate_psnr_3d, ssim_3d, loss_plot
 from model.RFF import RFF
 from utils.data_loader import DatasetFromFolder
 
-parser = argparse.ArgumentParser(description='Train Super Resolution Models')
+parser = argparse.ArgumentParser(description='Train RFFNet for 3D MRI Super-Resolution')
 
-parser.add_argument('--upscale_factor', default=2, type=int, choices=[2, 4, 8],
-                    help='super resolution upscale factor')
-parser.add_argument('--num_epochs', default=200, type=int, help='train epoch number')
-parser.add_argument('--batch_size', default=32, type=int, help='train epoch number')
+parser.add_argument('--upscale_factor', type=int, default=2, choices=[2, 4, 8],
+                    help='Super-resolution upscale factor')
+
+parser.add_argument('--dataset', type=str, default='Kirby21',
+                    choices=['Kirby21', 'BraTS2019', 'IXI'],
+                    help='Dataset name')
+
+parser.add_argument('--patch_size', type=int, default=32,
+                    help='Patch size for training (e.g., 32 for 32x32x32)')
+
+parser.add_argument('--batch_size', type=int, default=2,
+                    help='Batch size')
+
+parser.add_argument('--epochs', type=int, default=200,
+                    help='Number of training epochs')
+parser.add_argument('--log_dir', type=str, default='logs',
+                    help='Root directory to save logs and checkpoints')
+
 
 if __name__ == '__main__':
-    opt = parser.parse_args([])
+    opt = parser.parse_args()
     UPSCALE_FACTOR = opt.upscale_factor
     BATCH_SIZE = opt.batch_size
-    NUM_EPOCHS = opt.num_epochs
+    NUM_EPOCHS = opt.epochs
+    PATCH_SIZE = opt.patch_size
+    DATASET = opt.dataset
+    LOG_DIR = opt.log_dir
     current_time = datetime.datetime.now()
     current_time_str = current_time.strftime("%Y_%m_%d_%H_%M_%S")
-    out_path = os.path.join('logs', f"{current_time_str}")
+    out_path = os.path.join(LOG_DIR, current_time_str)
     if not os.path.exists(out_path):
         os.makedirs(out_path)
-    train_hr_path = "dataset/kirby21/train/hr_patch"
-    val_hr_path = "dataset/kirby21/val/hr_patch"
+    train_hr_path = f"dataset/{DATASET}/train/hr_patch"
+    val_hr_path = f"dataset/{DATASET}/val/hr_patch"
     train_set = DatasetFromFolder(train_hr_path, UPSCALE_FACTOR)
     val_set = DatasetFromFolder(val_hr_path, UPSCALE_FACTOR)
 
