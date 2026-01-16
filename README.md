@@ -98,7 +98,7 @@ Training logs and model checkpoints are saved automatically during training.
 To evaluate a trained RFFNet model, run:
 
 ```bash
-python test.py \
+python model_test.py \
   --hr_path dataset/Kirby21/test/hr \
   --pre_save_path results/Kirby21/x2 \
   --pth_path logs/XXXX_XX_XX_XX_XX_XX/XX_best_psnr.pth \
